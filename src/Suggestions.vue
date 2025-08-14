@@ -8,9 +8,9 @@
         borderColor: colors.sentMessage.bg,
         color: colors.sentMessage.bg
       }"
-      @click="$emit('sendSuggestion', suggestion)"
+      @click="$emit('sendSuggestion', formatSuggestion(suggestion))"
     >
-      {{ suggestion }}
+      {{ formatSuggestion(suggestion).text }}
     </button>
   </div>
 </template>
@@ -29,6 +29,15 @@ export default {
   },
   data() {
     return {}
+  },
+  methods: {
+    formatSuggestion(suggestion) {
+      if (typeof suggestion === 'object' && suggestion !== null) {
+        const key = Object.keys(suggestion)[0]
+        return {text: key, selected: suggestion[key]}
+      }
+      return {text: suggestion}
+    }
   }
 }
 </script>

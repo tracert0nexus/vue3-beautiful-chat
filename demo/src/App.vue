@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import messageHistory from './messageHistory'
 import chatParticipants from './chatProfiles'
 import Header from './Header.vue'
@@ -170,8 +171,14 @@ export default {
       this.showTypingIndicator =
         text.length > 0 ? this.participants[this.participants.length - 1].id : ''
     },
-    onMessageWasSent(message) {
-      this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
+    async onMessageWasSent(message) {
+      const msg = Object.assign({}, message, {id: Math.random()})
+      this.messageList = [...this.messageList, msg]
+      try {
+        await axios.post('/api/messages', msg)
+      } catch (e) {
+        console.error('Failed to send message', e)
+      }
     },
     openChat() {
       this.isChatOpen = true
