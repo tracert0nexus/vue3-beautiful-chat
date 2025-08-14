@@ -2,7 +2,7 @@
   <div>
     <Suggestions :suggestions="suggestions" :colors="colors" @sendSuggestion="_submitSuggestion" />
     <div
-      v-if="file"
+      v-if="file && showTextInput"
       class="file-container"
       :style="{
         backgroundColor: colors.userInput.bg,
@@ -44,6 +44,7 @@
       </div>
     </div>
     <form
+      v-if="showTextInput"
       class="sc-user-input"
       :class="{active: inputActive}"
       :style="{background: colors.userInput.bg}"
@@ -164,6 +165,10 @@ export default {
       type: Boolean,
       default: () => false
     },
+    showTextInput: {
+      type: Boolean,
+      default: () => false
+    },
     onSubmit: {
       type: Function,
       required: true
@@ -262,7 +267,13 @@ export default {
       })
     },
     _submitSuggestion(suggestion) {
-      this.onSubmit({author: 'me', type: 'text', data: {text: suggestion}})
+      const payload = typeof suggestion === 'object' ? suggestion : {text: suggestion}
+      this.onSubmit({
+        author: 'me',
+        type: 'text',
+        data: {text: payload.text},
+        suggestionId: payload.id
+      })
     },
     _checkSubmitSuccess(success) {
       if (Promise !== undefined) {

@@ -63,6 +63,7 @@
       :on-submit="onUserInputSubmit"
       :suggestions="getSuggestions()"
       :show-file="showFile"
+      :show-text-input="showTextInput"
       :placeholder="placeholder"
       :colors="colors"
       :accepted-file-types="acceptedFileTypes"
@@ -96,6 +97,10 @@ export default {
       default: false
     },
     showFile: {
+      type: Boolean,
+      default: false
+    },
+    showTextInput: {
       type: Boolean,
       default: false
     },

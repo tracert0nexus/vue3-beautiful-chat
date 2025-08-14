@@ -1,7 +1,7 @@
 <template>
   <div class="sc-suggestions-row" :style="{background: colors.messageList.bg}">
     <button
-      v-for="(suggestion, idx) in suggestions"
+      v-for="(suggestion, idx) in normalizedSuggestions"
       :key="idx"
       class="sc-suggestions-element"
       :style="{
@@ -10,7 +10,7 @@
       }"
       @click="$emit('sendSuggestion', suggestion)"
     >
-      {{ suggestion }}
+      {{ suggestion.text }}
     </button>
   </div>
 </template>
@@ -27,8 +27,18 @@ export default {
       required: true
     }
   },
-  data() {
-    return {}
+  computed: {
+    normalizedSuggestions() {
+      return this.suggestions.map((s) => {
+        if (typeof s === 'string') {
+          return {text: s}
+        } else if (s && typeof s === 'object') {
+          const key = Object.keys(s)[0]
+          return {text: key, id: s[key]}
+        }
+        return {text: ''}
+      })
+    }
   }
 }
 </script>

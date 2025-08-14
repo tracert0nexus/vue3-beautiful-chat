@@ -16,6 +16,7 @@
       :show-launcher="true"
       :show-emoji="true"
       :show-file="true"
+      :show-text-input="showTextInput"
       :show-typing-indicator="showTypingIndicator"
       :show-edition="true"
       :show-deletion="true"
@@ -116,6 +117,7 @@ import Header from './Header.vue'
 import Footer from './Footer.vue'
 import TestArea from './TestArea.vue'
 import availableColors from './colors'
+import axios from 'axios'
 
 export default {
   name: 'App',
@@ -137,7 +139,8 @@ export default {
       chosenColor: null,
       alwaysScrollToBottom: true,
       messageStyling: true,
-      userIsTyping: false
+      userIsTyping: false,
+      showTextInput: false
     }
   },
   computed: {
@@ -172,6 +175,10 @@ export default {
     },
     onMessageWasSent(message) {
       this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
+      if (message.suggestionId) {
+        axios.post('/api/suggestions', {id: message.suggestionId})
+        this.showTextInput = true
+      }
     },
     openChat() {
       this.isChatOpen = true
