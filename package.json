@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "autolinker": "^4.1.0",
+    "axios": "^1.7.7",
     "emoji-js": "^3.8.1",
     "escape-goat": "^4.0.0",
     "imagemin": "^9.0.0",

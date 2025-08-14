@@ -63,6 +63,7 @@ app.use(Chat)
       :open="openChat"
       :showEmoji="true"
       :showFile="true"
+      :showTextInput="showTextInput"
       :showEdition="true"
       :showDeletion="true"
       :deletionConfirmation="true"
@@ -196,6 +197,7 @@ For more detailed examples see the demo folder.
 | showEmoji                   | Boolean | A bool indicating whether or not to show the emoji button
 | showEmojiInText             | Boolean | A bool indicating whether or not to send emoji directly as a message as opposed to inserting them into the user input
 | showFile                    | Boolean | A bool indicating whether or not to show the file chooser button
+| showTextInput               | Boolean | A bool indicating whether or not to show the text input field
 | showDeletion                | Boolean | A bool indicating whether or not to show the edit button for a message
 | showConfirmationDeletion    | Boolean | A bool indicating whether or not to show the confirmation text when we remove a message
 | confirmationDeletionMessage | String | The message you want to show when confirming the deletion
@@ -311,7 +313,7 @@ Message objects are rendered differently depending on their type. Currently, onl
 
 #### Quick replies
 
-When sending a message, you can provide a set of sentences that will be displayed in the user chat as quick replies. Adding in the message object a `suggestions` field with the value an array of strings will trigger this functionality
+When sending a message, you can provide a set of sentences that will be displayed in the user chat as quick replies. Adding in the message object a `suggestions` field with the value an array of strings or key-value objects will trigger this functionality. When using objects, each object should have the form `{ 'Displayed text': id }` and only the text will be shown in the chat. The corresponding id will be available in the `onMessageWasSent` callback as `suggestionId`.
 
 ```javascript
 {
@@ -322,7 +324,7 @@ When sending a message, you can provide a set of sentences that will be displaye
     text: 'some text',
     meta: '06-16-2019 12:43'
   },
-  suggestions: ['some quick reply', ..., 'another one']
+  suggestions: [{ 'Option A': 11 }, { OptionB: 12 }, 'another one']
 }
 ```
 

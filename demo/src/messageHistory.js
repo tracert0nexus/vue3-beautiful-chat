@@ -99,9 +99,8 @@ export default [
     id: 21,
     data: {text: `What about suggestions?`},
     suggestions: [
-      'Looks good!',
-      "It's OK.",
-      'Uhh.. Do I really have to say something?',
+      { 'Option A': 11 },
+      { OptionB: 12 },
       "This suggestion is way too long for css purpose. Let's make it long... Longer, and more and more.. Never ending."
     ]
   }
