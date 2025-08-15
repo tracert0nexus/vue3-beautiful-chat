@@ -9,7 +9,7 @@
     >
       <div v-if="newMessagesCount > 0 && !isOpen" class="sc-new-messsages-count">
         {{ newMessagesCount }}
-      </div>
+      </div> <!-- TODO: Asset Reference Checkup -->
       <img v-if="isOpen" class="sc-closed-icon" :src="icons.close.img" :alt="icons.close.name" />
       <img v-else class="sc-open-icon" :src="icons.open.img" :alt="icons.open.name" />
     </div>

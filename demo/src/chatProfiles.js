@@ -1,12 +1,12 @@
 export default [
   {
-    id: 'mattmezza',
-    name: 'Matteo',
-    imageUrl: 'https://avatars3.githubusercontent.com/u/1915989?s=230&v=4'
+    id: 'unisportler',
+    name: 'Unisportler:in',
+    imageUrl: ''
   },
   {
     id: 'support',
     name: 'Support',
-    imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5o4LK276cxGg6OCIKf-vxbM63Tu9_XWeiyQ&s'
   }
 ]

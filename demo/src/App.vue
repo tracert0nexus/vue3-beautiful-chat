@@ -1,6 +1,5 @@
 <template>
   <div :style="{background: backgroundColor}">
-    <Header :chosen-color="chosenColor" :colors="colors" />
     <beautiful-chat
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :close="closeChat"
@@ -13,31 +12,15 @@
       :open="openChat"
       :participants="participants"
       :show-close-button="true"
-      :show-launcher="true"
-      :show-emoji="true"
-      :show-file="true"
       :show-text-input="showTextInput"
       :show-typing-indicator="showTypingIndicator"
-      :show-edition="true"
-      :show-deletion="true"
-      :show-confirmation-deletion="true"
-      :confirmation-deletion-message="'Are you sure? (you can customize this message)'"
-      :title-image-url="titleImageUrl"
       :disable-user-list-toggle="false"
       @onType="handleOnType"
       @edit="editMessage"
       @remove="removeMessage"
     >
       <template v-slot:header>
-        Chat between {{ participants.map((m) => m.name).join(' & ') }}
-      </template>
-      <template v-slot:text-message-toolbox="scopedProps">
-        <button
-          v-if="!scopedProps.me && scopedProps.message.type === 'text'"
-          @click.prevent="like(scopedProps.message.id)"
-        >
-          👍
-        </button>
+        Unisport Sekretariat
       </template>
       <template v-slot:text-message-body="scopedProps">
         <p class="sc-message--text-content" v-html="scopedProps.messageText"></p>
@@ -48,57 +31,9 @@
         >
           {{ scopedProps.message.data.meta }}
         </p>
-        <p
-          v-if="scopedProps.message.isEdited || scopedProps.message.liked"
-          class="sc-message--edited"
-        >
-          <template v-if="scopedProps.message.isEdited">✎</template>
-          <template v-if="scopedProps.message.liked">👍</template>
-        </p>
       </template>
       <template v-slot:system-message-body="{message}"> [System]: {{ message.text }} </template>
     </beautiful-chat>
-    <p class="text-center toggle">
-      <a v-if="!isChatOpen" :style="{color: linkColor}" href="#" @click.prevent="openChat()"
-        >Open the chat window</a
-      >
-      <a v-else :style="{color: linkColor}" href="#" @click.prevent="closeChat()"
-        >Close the chat window</a
-      >
-    </p>
-    <p class="text-center colors">
-      <a
-        :style="{background: availableColors.blue.launcher.bg}"
-        href="#"
-        @click.prevent="setColor('blue')"
-        >Blue</a
-      >
-      <a
-        :style="{background: availableColors.red.launcher.bg}"
-        href="#"
-        @click.prevent="setColor('red')"
-        >Red</a
-      >
-      <a
-        :style="{background: availableColors.green.launcher.bg}"
-        href="#"
-        @click.prevent="setColor('green')"
-        >Green</a
-      >
-      <a
-        :style="{background: availableColors.dark.launcher.bg}"
-        href="#"
-        @click.prevent="setColor('dark')"
-        >Dark</a
-      >
-    </p>
-    <p class="text-center messageStyling">
-      <label
-        >Message styling enabled?
-        <input checked type="checkbox" @change="messageStylingToggled" />
-      </label>
-      <a href="#" @click.prevent="showStylingInfo()">info</a>
-    </p>
     <TestArea
       :chosen-color="chosenColor"
       :colors="colors"
@@ -106,15 +41,12 @@
       :on-message="sendMessage"
       :on-typing="handleTyping"
     />
-    <Footer :chosen-color="chosenColor" :colors="colors" />
   </div>
 </template>
 
 <script>
 import messageHistory from './messageHistory'
 import chatParticipants from './chatProfiles'
-import Header from './Header.vue'
-import Footer from './Footer.vue'
 import TestArea from './TestArea.vue'
 import availableColors from './colors'
 import axios from 'axios'
@@ -122,14 +54,11 @@ import axios from 'axios'
 export default {
   name: 'App',
   components: {
-    Header,
-    Footer,
     TestArea
   },
   data() {
     return {
       participants: chatParticipants,
-      titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
       messageList: messageHistory,
       newMessagesCount: 0,
       isChatOpen: false,
@@ -152,7 +81,7 @@ export default {
     }
   },
   created() {
-    this.setColor('blue')
+    this.setColor('red')
   },
   mounted() {
     this.messageList.forEach((x) => (x.liked = false))
@@ -173,14 +102,52 @@ export default {
       this.showTypingIndicator =
         text.length > 0 ? this.participants[this.participants.length - 1].id : ''
     },
-    onMessageWasSent(message) {
-      this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
-      console.log("Selected Option-ID: " + message.suggestionId)
-      /*
+    async onMessageWasSent(message) {
+      // 1) User-Nachricht anhängen
+      const makeId = () => Math.floor(Math.random() * 1e9);
+      const userMsg = { ...message, id: message.id ?? makeId() };
+      this.messageList = [...this.messageList, userMsg];
+
+      console.log("Selected Option-ID:", message.suggestionId);
+
+      // 2) Falls eine Suggestion gewählt wurde → API fragen & Antwort anhängen
       if (message.suggestionId) {
-        axios.post('/api/suggestions', {id: message.suggestionId})
-        this.showTextInput = true
-      }*/
+        try {
+          const { data } = await axios.post(
+              'http://localhost:82/index.php/api/ask',
+              { id: message.suggestionId }
+          );
+
+          // API liefert ein Array von Messages -> direkt anhängen
+          const botMessages = (Array.isArray(data) ? data : [data]).map(m => ({
+            ...m,
+            id: m.id ?? makeId() // falls Backend keine id setzt
+          }));
+
+          this.messageList = [...this.messageList, ...botMessages];
+
+          // 3) Texteingabe nur anzeigen, wenn keine Suggestions mehr vorliegen
+          const last = botMessages[botMessages.length - 1] || {};
+          this.showTextInput = !(Array.isArray(last.suggestions) && last.suggestions.length > 0);
+        } catch (err) {
+          console.error(err);
+          // Optional: Fehler als System-Hinweis anhängen
+          this.messageList = [
+            ...this.messageList,
+            {
+              type: 'text',
+              author: 'system',
+              id: makeId(),
+              data: { text: 'Konnte die Antwort nicht laden. Bitte wende dich an it.sport@unibe.ch' },
+              suggestions: []
+            }
+          ];
+          this.showTextInput = true;
+        }
+      } else {
+        // Freitextfall
+        this.showTextInput = true;
+      }
     },
     openChat() {
       this.isChatOpen = true
@@ -189,7 +156,7 @@ export default {
     closeChat() {
       this.isChatOpen = false
     },
-    setColor(color) {
+    setColor(color = 'red') {
       this.colors = this.availableColors[color]
       this.chosenColor = color
     },
@@ -279,7 +246,7 @@ body {
 }
 
 .text-center {
-  text-align: center;
+  text-align: left;
 }
 
 .colors a {
