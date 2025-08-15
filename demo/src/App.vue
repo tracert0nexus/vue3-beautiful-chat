@@ -175,10 +175,12 @@ export default {
     },
     onMessageWasSent(message) {
       this.messageList = [...this.messageList, Object.assign({}, message, {id: Math.random()})]
+      console.log("Selected Option-ID: " + message.suggestionId)
+      /*
       if (message.suggestionId) {
         axios.post('/api/suggestions', {id: message.suggestionId})
         this.showTextInput = true
-      }
+      }*/
     },
     openChat() {
       this.isChatOpen = true

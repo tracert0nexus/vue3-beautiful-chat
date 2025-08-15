@@ -11,7 +11,7 @@
       </div>
       <div class="sc-message--file-text" :style="messageColors">
         {{ message.data.text }}
-        <p v-if="data.meta" class="sc-message--meta" :style="messageColors">
+        <p v-if="message.data?.meta" class="sc-message--meta" :style="messageColors">
           {{ message.data.meta }}
         </p>
       </div>
