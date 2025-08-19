@@ -7,7 +7,7 @@
   "author": "Sitronik <sitronik92@mail.ru>",
   "license": "MIT",
   "scripts": {
-    "dev": "vue-cli-service serve ./demo/src/main.js",
+    "dev": "vue-cli-service serve",
     "build:prod": "vite build",
     "lint": "vue-cli-service lint",
     "build:dev": "npm run build -- --mode development --watch",

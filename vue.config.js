@@ -22,5 +22,13 @@ module.exports = {
 
   css: {
     extract: false
+  },
+
+  pages: {
+    demo: {
+      entry: 'demo/src/main.js',
+      template: 'demo/public/mockup.html',
+      filename: 'index.html'
+    }
   }
 }
