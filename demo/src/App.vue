@@ -114,7 +114,7 @@ export default {
       if (message.suggestionId) {
         try {
           const { data } = await axios.post(
-              'http://localhost:82/index.php/api/ask',
+              'http://130.92.87.146:82/index.php/api/ask',
               { id: message.suggestionId }
           );
 
