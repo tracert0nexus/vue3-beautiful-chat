@@ -9,9 +9,9 @@
     >
       <div v-if="newMessagesCount > 0 && !isOpen" class="sc-new-messsages-count">
         {{ newMessagesCount }}
-      </div> <!-- TODO: Asset Reference Checkup -->
-      <img v-if="isOpen" class="sc-closed-icon" :src="icons.close.img" :alt="icons.close.name" />
-      <img v-else class="sc-open-icon" :src="icons.open.img" :alt="icons.open.name" />
+      </div> <!-- TODO: Checkup before GoLive / PROD -->
+      <!--<img v-if="isOpen" class="sc-closed-icon" :src="icons.close.img" :alt="icons.close.name" />
+      <img v-else class="sc-open-icon" :src="icons.open.img" :alt="icons.open.name" /> -->
     </div>
     <ChatWindow
       :message-list="messageList"
@@ -96,12 +96,12 @@ export default {
       default: function () {
         return {
           open: {
-            img: OpenIcon,
-            name: 'default'
+            img: null,
+            name: ''
           },
           close: {
-            img: CloseIcon,
-            name: 'default'
+            img: null,
+            name: ''
           },
           minimize: {
             img: null,
